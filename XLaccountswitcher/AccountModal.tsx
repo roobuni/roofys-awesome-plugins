@@ -110,6 +110,11 @@ interface AccountItemProps {
 
 function AccountItem({ account, onEdit, onDelete, onSwitch }: AccountItemProps) {
     const defaultAvatar = `https://cdn.discordapp.com/embed/avatars/0.png`;
+
+    const copyToken = () => {
+        navigator.clipboard.writeText(account.token);
+    };
+
     return (
         <div style={styles.accountItem}>
             <div style={styles.accountInfo}>
@@ -126,9 +131,69 @@ function AccountItem({ account, onEdit, onDelete, onSwitch }: AccountItemProps) 
                 </div>
             </div>
             <div style={styles.buttonGroup}>
-                <Button size={Button.Sizes.SMALL} onClick={() => onSwitch(account)}>Switch</Button>
-                <Button size={Button.Sizes.SMALL} color={Button.Colors.PRIMARY} look={Button.Looks.LINK} onClick={() => onEdit(account)}>Edit</Button>
-                <Button size={Button.Sizes.SMALL} color={Button.Colors.RED} look={Button.Looks.LINK} onClick={() => onDelete(account.id)}>Delete</Button>
+                <button
+                    onClick={copyToken}
+                    title="Copy token"
+                    style={{
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: "6px",
+                        borderRadius: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                    onMouseOver={(e) => (e.currentTarget.style.background = "#3f4147")}
+                    onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#b5bac1">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                    </svg>
+                </button>
+                <button
+                    onClick={() => onSwitch(account)}
+                    style={{
+                        background: "#5865f2",
+                        color: "#fff",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                        fontSize: "14px"
+                    }}
+                >
+                    Switch
+                </button>
+                <button
+                    onClick={() => onEdit(account)}
+                    style={{
+                        background: "transparent",
+                        color: "#00a8fc",
+                        border: "none",
+                        padding: "6px 12px",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                        fontSize: "14px"
+                    }}
+                >
+                    Edit
+                </button>
+                <button
+                    onClick={() => onDelete(account.id)}
+                    style={{
+                        background: "transparent",
+                        color: "#ed4245",
+                        border: "none",
+                        padding: "6px 12px",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                        fontSize: "14px"
+                    }}
+                >
+                    Delete
+                </button>
             </div>
         </div>
     );
@@ -201,14 +266,41 @@ function AddEditForm({ account, onSave, onCancel }: AddEditFormProps) {
             </div>
             {error && <Text variant="text-sm/medium" style={{ color: "#ed4245", marginBottom: "12px" }}>{error}</Text>}
             <div style={styles.buttonGroup}>
-                <Button onClick={handleSubmit}>{account ? "Save" : "Add"}</Button>
-                <Button color={Button.Colors.PRIMARY} look={Button.Looks.LINK} onClick={onCancel}>Cancel</Button>
+                <button
+                    onClick={handleSubmit}
+                    style={{
+                        background: "#5865f2",
+                        color: "#fff",
+                        border: "none",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                        fontSize: "14px"
+                    }}
+                >
+                    {account ? "Save" : "Add"}
+                </button>
+                <button
+                    onClick={onCancel}
+                    style={{
+                        background: "transparent",
+                        color: "#00a8fc",
+                        border: "none",
+                        padding: "8px 16px",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                        fontSize: "14px"
+                    }}
+                >
+                    Cancel
+                </button>
             </div>
         </div>
     );
 }
 
-function MassImportForm({ onComplete }: { onComplete: () => void }) {
+function MassImportForm({ onComplete }: { onComplete: () => void; }) {
     const [tokens, setTokens] = useState("");
     const [isImporting, setIsImporting] = useState(false);
     const [progress, setProgress] = useState({ current: 0, total: 0 });
@@ -262,7 +354,22 @@ function MassImportForm({ onComplete }: { onComplete: () => void }) {
                 </div>
             )}
             <div style={styles.buttonGroup}>
-                <Button onClick={handleImport} disabled={!tokens.trim()}>Import</Button>
+                <button
+                    onClick={handleImport}
+                    disabled={!tokens.trim()}
+                    style={{
+                        background: tokens.trim() ? "#5865f2" : "#4e5058",
+                        color: "#fff",
+                        border: "none",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        cursor: tokens.trim() ? "pointer" : "not-allowed",
+                        fontWeight: 500,
+                        fontSize: "14px"
+                    }}
+                >
+                    Import
+                </button>
             </div>
         </div>
     );
@@ -362,9 +469,19 @@ function AccountModalContent({ onSwitch }: AccountModalProps) {
                                     />
                                 ))}
                             </div>
-                            <Button
-                                style={{ marginTop: "12px", width: "100%" }}
-                                color={Button.Colors.PRIMARY}
+                            <button
+                                style={{
+                                    marginTop: "12px",
+                                    width: "100%",
+                                    background: "#5865f2",
+                                    color: "#fff",
+                                    border: "none",
+                                    padding: "10px 16px",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    fontWeight: 500,
+                                    fontSize: "14px"
+                                }}
                                 onClick={() => {
                                     const tokens = accounts.map(a => a.token).join("\n");
                                     navigator.clipboard.writeText(tokens);
@@ -372,7 +489,7 @@ function AccountModalContent({ onSwitch }: AccountModalProps) {
                                 }}
                             >
                                 Copy All Tokens
-                            </Button>
+                            </button>
                         </>
                     )}
                 </div>
