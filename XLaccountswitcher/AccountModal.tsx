@@ -99,6 +99,17 @@ const styles = {
         fontSize: "12px",
         color: "#b5bac1",
     },
+    searchBox: {
+        width: "100%",
+        padding: "10px 12px",
+        marginBottom: "12px",
+        borderRadius: "6px",
+        backgroundColor: "#1e1f22",
+        border: "1px solid #3f4147",
+        color: "#dcddde",
+        fontSize: "14px",
+        outline: "none",
+    },
 };
 
 interface AccountItemProps {
@@ -387,6 +398,7 @@ function AccountModalContent({ onSwitch }: AccountModalProps) {
     const [editingAccount, setEditingAccount] = useState<Account | null>(null);
     const [activeTab, setActiveTab] = useState<TabType>("accounts");
     const [retryLoading, setRetryLoading] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const refresh = () => {
         setAccounts(getAccounts());
@@ -458,16 +470,31 @@ function AccountModalContent({ onSwitch }: AccountModalProps) {
                         </div>
                     ) : (
                         <>
+                            <input
+                                type="text"
+                                placeholder="Search by name, ID, or token..."
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                style={styles.searchBox}
+                            />
                             <div style={styles.accountList}>
-                                {accounts.map(account => (
-                                    <AccountItem
-                                        key={account.id}
-                                        account={account}
-                                        onEdit={setEditingAccount}
-                                        onDelete={handleDeleteAccount}
-                                        onSwitch={onSwitch}
-                                    />
-                                ))}
+                                {accounts
+                                    .filter(acc => {
+                                        if (!searchQuery.trim()) return true;
+                                        const q = searchQuery.toLowerCase();
+                                        return acc.nickname.toLowerCase().includes(q) ||
+                                            (acc.discordId && acc.discordId.includes(q)) ||
+                                            acc.token.slice(-8).toLowerCase().includes(q);
+                                    })
+                                    .map(account => (
+                                        <AccountItem
+                                            key={account.id}
+                                            account={account}
+                                            onEdit={setEditingAccount}
+                                            onDelete={handleDeleteAccount}
+                                            onSwitch={onSwitch}
+                                        />
+                                    ))}
                             </div>
                             <button
                                 style={{

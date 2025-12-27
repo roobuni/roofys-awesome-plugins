@@ -34,6 +34,9 @@ most useful plugin for people who do silly things to servers, it allows you to s
 - auto move invaild accounts to invaild tab (you can delete them there or click retry)
 - add individual and set a nickname
 - ## SWITCHING ACCOUNTS WILL CLEAR THE CURRENT ACCOUNTS YOU HAVE IN THE NATIVE ACCOUNT SWITCHER SINCE IT CLEARS ACCOUNT SWITCHER KEYS FOR EACH TIME YOU SWITCH ACCOUNTS USING THE PLUGIN, SO BACK UP YOUR ACCOUNTS FIRST!!!!
+- search accounts by nickname or token
+- copy tokens
+
 
 ## letmesee
 
