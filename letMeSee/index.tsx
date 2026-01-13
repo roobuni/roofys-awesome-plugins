@@ -181,16 +181,24 @@ export default definePlugin({
             }
         },
 
-        CHANNEL_DELETE({ channel }: { channel: { id: string } }) {
+        CHANNEL_DELETE({ channel }: { channel: { id: string; type?: number } }) {
             if (channel?.id) {
                 DB.deleteChannel(channel.id).catch(() => { });
+                injectedChannels.delete(channel.id);
             }
         },
 
         async CHANNEL_SELECT({ channelId }: { channelId: string }) {
             if (!channelId) return;
             const channel = ChannelStore.getChannel(channelId);
-            if (isDMChannel(channel)) return;
+
+            if (isDMChannel(channel)) {
+                DB.deleteChannel(channelId).catch(() => { });
+                return;
+            }
+
+            if (channel?.type === 1 || channel?.type === 3) return;
+
             if (injectedChannels.has(channelId)) return;
 
             try {

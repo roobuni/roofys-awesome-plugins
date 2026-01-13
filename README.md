@@ -46,3 +46,7 @@ this one was kind of hard to make since yea. this plugin allows you to constantl
 ## makeshifteveryone 
 
 just add a button in the context menu that pastes all user ids in the text box, i recommended turning off syntax markdowns in settings to copy the ids.
+
+## catboxUploader
+
+a new button in the attachment context menu and textbox context menu that allows you to bypass discords 10mb limit! discord free users can click on "Upload video to Catbox" to you know! do that. this has its own upload system, completely bypassing discords upload system to avoid the upsell prompts. so free discord users can now upload up to 200 mb instend of 10, nitro users can tick "Auto Catbox for Videos" if they just perfer uploading it there. you can disable toasts in plugin settings. this only supports videos only.
