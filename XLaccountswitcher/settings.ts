@@ -14,6 +14,12 @@ export const settings = definePluginSettings({
         description: "Invalid accounts",
         hidden: true
     },
+    pinnedAccounts: {
+        type: OptionType.STRING,
+        default: "[]",
+        description: "Pinned account IDs",
+        hidden: true
+    },
     showConfirmation: {
         type: OptionType.BOOLEAN,
         default: true,

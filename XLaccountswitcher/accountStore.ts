@@ -32,6 +32,47 @@ export interface MassImportResult {
     errors: string[];
 }
 
+export interface CurrentAccountInfo {
+    token: string;
+    displayName: string;
+    discordId: string;
+    avatarUrl: string;
+}
+
+export function getCurrentAccountInfo(): CurrentAccountInfo | null {
+    try {
+        const tokenRaw = localStorage.getItem("token");
+        if (!tokenRaw) return null;
+        const token = JSON.parse(tokenRaw);
+        if (!token || typeof token !== "string") return null;
+
+        const wcda = (window as any).webpackChunkdiscord_app;
+        if (!wcda) return null;
+
+        let userStore: any = null;
+        wcda.push([[Symbol()], {}, (r: any) => {
+            for (const key in r.c) {
+                const m = r.c[key];
+                if (m?.exports?.default?.getCurrentUser) {
+                    userStore = m.exports.default;
+                    break;
+                }
+            }
+        }]);
+
+        if (!userStore) return null;
+        const user = userStore.getCurrentUser?.();
+        if (!user) return null;
+
+        const avatarUrl = getAvatarUrl(user.id, user.avatar);
+        const displayName = user.globalName || user.username;
+
+        return { token, displayName, discordId: user.id, avatarUrl };
+    } catch {
+        return null;
+    }
+}
+
 export function getAccounts(): Account[] {
     try {
         return JSON.parse(settings.store.accounts);
@@ -295,6 +336,45 @@ export function deleteInvalidAccount(id: string): boolean {
     saveInvalidAccounts(filtered);
     showToast("Deleted invalid account", Toasts.Type.SUCCESS);
     return true;
+}
+
+export function getPinnedAccountIds(): string[] {
+    try {
+        return JSON.parse(settings.store.pinnedAccounts);
+    } catch {
+        return [];
+    }
+}
+
+export function savePinnedAccountIds(ids: string[]) {
+    settings.store.pinnedAccounts = JSON.stringify(ids);
+}
+
+export function pinAccount(id: string): boolean {
+    const pinned = getPinnedAccountIds();
+    if (pinned.includes(id)) return false;
+    pinned.push(id);
+    savePinnedAccountIds(pinned);
+    showToast("OK", Toasts.Type.SUCCESS);
+    return true;
+}
+
+export function unpinAccount(id: string): boolean {
+    const pinned = getPinnedAccountIds();
+    const filtered = pinned.filter(pid => pid !== id);
+    savePinnedAccountIds(filtered);
+    showToast("OK", Toasts.Type.SUCCESS);
+    return true;
+}
+
+export function isAccountPinned(id: string): boolean {
+    return getPinnedAccountIds().includes(id);
+}
+
+export function getPinnedAccounts(): Account[] {
+    const pinned = getPinnedAccountIds();
+    const accounts = getAccounts();
+    return accounts.filter(acc => pinned.includes(acc.id));
 }
 
 export async function retryValidateAccount(id: string): Promise<boolean> {
