@@ -236,7 +236,7 @@ export default definePlugin({
         "textarea-context": ChatBarContextCheckbox,
         "channel-attach": AttachContextMenu
     },
-       //hacks TTV
+    //hacks TTV
     patches: [
         {
             find: "async uploadFiles(",
