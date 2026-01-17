@@ -19,11 +19,15 @@
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import { Logger } from "@utils/Logger";
+import { closeModal, openModal } from "@utils/modal";
 import { chooseFile } from "@utils/web";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { Channel, CloudUpload } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { Constants, Menu, MessageActions, RestAPI, SelectedChannelStore, Toasts, UploadHandler } from "@webpack/common";
+
+import { CatboxPreviewModal } from "./modal";
+import { showUploadToast } from "./UploadToast";
 
 const logger = new Logger("CatboxUploader");
 const Native = VencordNative.pluginHelpers.CatboxUploader as PluginNative<typeof import("./native")>;
@@ -155,14 +159,12 @@ async function uploadVideoViaCatbox() {
     const channelId = SelectedChannelStore.getChannelId();
     if (!channelId) return;
 
-
     const file = await chooseFile("video/*");
     if (!file) return;
 
-
     if (file.size > MAX_FILE_SIZE) {
         Toasts.show({
-            message: "ERR: File too large",
+            message: "ERR: File too large (max 200MB)",
             type: Toasts.Type.FAILURE,
             id: Toasts.genId(),
             options: { duration: 5000 }
@@ -170,7 +172,19 @@ async function uploadVideoViaCatbox() {
         return;
     }
 
+    const key = openModal(props => (
+        <CatboxPreviewModal
+            rootProps={props}
+            file={file}
+            onConfirm={async (processedFile) => {
+                await performUpload(channelId, processedFile);
+            }}
+            close={() => closeModal(key)}
+        />
+    ));
+}
 
+async function performUpload(channelId: string, file: File) {
     let placeholderMessageId: string | null = null;
     try {
         const result = await sendMessage(channelId, `Uploading ${file.name} to Catbox`);
@@ -180,36 +194,22 @@ async function uploadVideoViaCatbox() {
         return;
     }
 
+    const toast = settings.store.showToast
+        ? showUploadToast(file.name, file.size)
+        : null;
 
     try {
-        if (settings.store.showToast) {
-            Toasts.show({
-                message: "Uploading...",
-                type: Toasts.Type.MESSAGE,
-                id: Toasts.genId(),
-                options: { duration: 3000 }
-            });
-        }
-
         const catboxUrl = await uploadToCatbox(file, settings.store.userhash);
         logger.info(`Uploaded ${file.name} to Catbox: ${catboxUrl}`);
-
 
         if (placeholderMessageId) {
             await editMessage(channelId, placeholderMessageId, catboxUrl);
         }
 
-        if (settings.store.showToast) {
-            Toasts.show({
-                message: "OK",
-                type: Toasts.Type.SUCCESS,
-                id: Toasts.genId(),
-                options: { duration: 3000 }
-            });
-        }
+        toast?.complete();
     } catch (error) {
         logger.error(`Failed to upload ${file.name}:`, error);
-
+        toast?.error();
 
         if (placeholderMessageId) {
             try {
@@ -270,13 +270,12 @@ export default definePlugin({
 
         if (videosToProcess.length === 0) return false;
 
-        // check for non-video files
         const hasOtherFiles = uploads.some((u, i) =>
             !videosToProcess.some(v => v.index === i) && u?.item?.file
         );
 
         if (hasOtherFiles) {
-            return false; // mixed upload, let Discord handle
+            return false;
         }
 
         const fileNames = videosToProcess.map(v => (v.upload.item.file as File).name).join(", ");
