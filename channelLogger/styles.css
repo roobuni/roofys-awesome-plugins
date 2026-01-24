@@ -1,0 +1,15 @@
+.vc-channel-logger-deleted {
+    background-color: rgba(237, 66, 69, 0.15) !important;
+}
+
+.vc-channel-logger-deleted [class*="name-"] {
+    color: #ed4245 !important;
+}
+
+.vc-channel-logger-deleted [class*="icon-"] {
+    color: #ed4245 !important;
+}
+
+.vc-channel-logger-deleted:hover {
+    background-color: rgba(237, 66, 69, 0.25) !important;
+}

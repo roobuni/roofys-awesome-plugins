@@ -1,0 +1,218 @@
+/* Catbox Preview Modal */
+
+.vc-catbox-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #3f4147;
+}
+
+.vc-catbox-preview-title {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+}
+
+.vc-catbox-preview-content {
+    padding: 16px;
+}
+
+.vc-catbox-preview-video-container {
+    width: 100%;
+    max-height: 350px;
+    display: flex;
+    justify-content: center;
+    background: #1e1f22;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.vc-catbox-preview-video {
+    max-width: 100%;
+    max-height: 350px;
+}
+
+.vc-catbox-preview-file-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #2b2d31;
+    border-radius: 6px;
+}
+
+.vc-catbox-preview-file-name {
+    color: #dbdee1;
+    font-size: 14px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 70%;
+}
+
+.vc-catbox-preview-file-size {
+    color: #949ba4;
+    font-size: 13px;
+    font-family: "Consolas", monospace;
+}
+
+.vc-catbox-preview-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid #3f4147;
+}
+
+.vc-catbox-preview-btn-upload,
+.vc-catbox-preview-btn-cancel {
+    background: #3f4147;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.vc-catbox-preview-btn-upload:hover:not(:disabled) {
+    background: #4e5058;
+}
+
+.vc-catbox-preview-btn-upload:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vc-catbox-preview-btn-cancel {
+    background: transparent;
+    color: #b5bac1;
+}
+
+.vc-catbox-preview-btn-cancel:hover {
+    background: #35373c;
+    color: #ffffff;
+}
+
+/* Upload Toast */
+#vc-catbox-toast-root {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+}
+
+.vc-catbox-toast-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #2b2d31;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    min-width: 280px;
+    animation: toastIn 0.15s ease;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vc-catbox-toast-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vc-catbox-toast-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #3f4147;
+    border-top-color: #b5bac1;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.vc-catbox-toast-check {
+    width: 24px;
+    height: 24px;
+    animation: checkPop 0.2s ease;
+}
+
+@keyframes checkPop {
+    0% {
+        transform: scale(0);
+    }
+
+    70% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.vc-catbox-toast-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.vc-catbox-toast-filename {
+    color: #dbdee1;
+    font-size: 14px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vc-catbox-toast-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.vc-catbox-toast-size,
+.vc-catbox-toast-percent {
+    color: #949ba4;
+    font-size: 12px;
+    font-family: "Consolas", monospace;
+}
+
+.vc-catbox-toast-progress-track {
+    height: 4px;
+    background: #1e1f22;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.vc-catbox-toast-progress-fill {
+    height: 100%;
+    background: #b5bac1;
+    border-radius: 2px;
+    transition: width 0.1s ease;
+}
