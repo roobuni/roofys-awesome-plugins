@@ -22,16 +22,17 @@ import { Logger } from "@utils/Logger";
 import { closeModal, openModal } from "@utils/modal";
 import { chooseFile } from "@utils/web";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
-import { Channel, CloudUpload } from "@vencord/discord-types";
-import { findByPropsLazy } from "@webpack";
-import { Constants, Menu, MessageActions, RestAPI, SelectedChannelStore, Toasts, UploadHandler } from "@webpack/common";
+import { CloudUpload } from "@vencord/discord-types";
+import { findCssClassesLazy } from "@webpack";
+import { Constants, Menu, MessageActions, RestAPI, SelectedChannelStore, Toasts } from "@webpack/common";
 
 import { CatboxPreviewModal } from "./modal";
 import { showUploadToast } from "./UploadToast";
 
 const logger = new Logger("CatboxUploader");
 const Native = VencordNative.pluginHelpers.CatboxUploader as PluginNative<typeof import("./native")>;
-const OptionClasses = findByPropsLazy("optionName", "optionIcon", "optionLabel");
+const OptionClasses = findCssClassesLazy("optionName", "optionIcon", "optionLabel");
+
 
 function CatboxIcon({ className, height = 24, width = 24 }: { className?: string; height?: number; width?: number; }) {
     return (
